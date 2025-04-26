@@ -30,9 +30,9 @@ jobs:
           - command: push
             packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
             nuGetFeedType: external
-            publishFeedCredentials: ${{ secrets.NUGET_SERVER_CREDENTIALS }}
+            # Secret will be passed from top-level input
 
-    uses: kirandevops1993/DOTNETCORECLI-REUSABLE/.github/workflows/dotnetreusable.yml@main
+    uses: ./.github/workflows/reusable-dotnet.yml
     with:
       command: ${{ matrix.task.command }}
       projects: ${{ matrix.task.projects || '' }}
@@ -43,4 +43,4 @@ jobs:
       configuration: ${{ matrix.task.configuration || '' }}
       packagesToPush: ${{ matrix.task.packagesToPush || '' }}
       nuGetFeedType: ${{ matrix.task.nuGetFeedType || '' }}
-      publishFeedCredentials: ${{ matrix.task.publishFeedCredentials || '' }}
+      publishFeedCredentials: ${{ secrets.NUGET_SERVER_CREDENTIALS }}  # ✅ safe to use here
