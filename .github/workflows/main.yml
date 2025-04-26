@@ -32,7 +32,7 @@ jobs:
             nuGetFeedType: external
             # Secret will be passed from top-level input
 
-    uses: kirandevops1993/DOTNETCORECLI-REUSABLE-/.github/workflows/dotnetreusable.yml@main
+    uses: kirandevops1993/DOTNETCORECLI-REUSABLE/.github/workflows/dotnetreusable.yml@main
     with:
       command: ${{ matrix.task.command }}
       projects: ${{ matrix.task.projects || '' }}
