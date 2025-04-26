@@ -4,33 +4,41 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
-  run-dotnet-tasks:
+  dotnet-tasks:
+    strategy:
+      matrix:
+        task:
+          - command: restore
+            projects: '**/*.csproj'
+            feedsToUse: config
+            nugetConfigPath: 'NuGet.config'
+
+          - command: build
+            projects: '**/*.csproj'
+            arguments: '--configuration Release'
+
+          - command: test
+            projects: '**/*.csproj'
+            arguments: '--collect "Code coverage"'
+
+          - command: pack
+            packagesToPack: '**/*.csproj'
+            configuration: 'Release'
+
+          - command: push
+            packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+            nuGetFeedType: external
+
     uses: kirandevops1993/DOTNETCORECLI-REUSABLE/.github/workflows/dotnetreusable.yml@main
     with:
-      command: build
-      projects: '**/*.csproj'
-      arguments: '--configuration Release'
-
-  test-dotnet-tasks:
-    uses: ./.github/workflows/reusable-dotnet.yml
-    with:
-      command: test
-      projects: '**/*Tests.csproj'
-      arguments: '--configuration Release'
-
-  pack-dotnet-tasks:
-    uses: ./.github/workflows/reusable-dotnet.yml
-    with:
-      command: pack
-      packagesToPack: '**/*.csproj'
-      configuration: 'Release'
-
-  push-dotnet-tasks:
-    uses: ./.github/workflows/reusable-dotnet.yml
-    with:
-      command: push
-      packagesToPush: './nupkgs/*.nupkg'
-      publishFeedUrl: 'https://api.nuget.org/v3/index.json'
+      command: ${{ matrix.task.command }}
+      projects: ${{ matrix.task.projects || '' }}
+      arguments: ${{ matrix.task.arguments || '' }}
+      feedsToUse: ${{ matrix.task.feedsToUse || '' }}
+      nugetConfigPath: ${{ matrix.task.nugetConfigPath || '' }}
+      packagesToPack: ${{ matrix.task.packagesToPack || '' }}
+      configuration: ${{ matrix.task.configuration || '' }}
+      packagesToPush: ${{ matrix.task.packagesToPush || '' }}
+      nuGetFeedType: ${{ matrix.task.nuGetFeedType || '' }}
