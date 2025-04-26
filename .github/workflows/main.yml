@@ -7,7 +7,6 @@ on:
 
 jobs:
   dotnet-tasks:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         task:
@@ -33,17 +32,15 @@ jobs:
             nuGetFeedType: external
             publishFeedCredentials: ${{ secrets.NUGET_SERVER_CREDENTIALS }}
 
-    steps:
-      - name: Call reusable workflow
-        uses: kirandevops1993/DOTNETCORECLI-REUSABLE-/.github/workflows/dotnetreusable.yml@main
-        with:
-          command: ${{ matrix.task.command }}
-          projects: ${{ matrix.task.projects || '' }}
-          arguments: ${{ matrix.task.arguments || '' }}
-          feedsToUse: ${{ matrix.task.feedsToUse || '' }}
-          nugetConfigPath: ${{ matrix.task.nugetConfigPath || '' }}
-          packagesToPack: ${{ matrix.task.packagesToPack || '' }}
-          configuration: ${{ matrix.task.configuration || '' }}
-          packagesToPush: ${{ matrix.task.packagesToPush || '' }}
-          nuGetFeedType: ${{ matrix.task.nuGetFeedType || '' }}
-          publishFeedCredentials: ${{ matrix.task.publishFeedCredentials || '' }}
+    uses: kirandevops1993/DOTNETCORECLI-REUSABLE-/.github/workflows/dotnetreusable.yml@main
+    with:
+      command: ${{ matrix.task.command }}
+      projects: ${{ matrix.task.projects || '' }}
+      arguments: ${{ matrix.task.arguments || '' }}
+      feedsToUse: ${{ matrix.task.feedsToUse || '' }}
+      nugetConfigPath: ${{ matrix.task.nugetConfigPath || '' }}
+      packagesToPack: ${{ matrix.task.packagesToPack || '' }}
+      configuration: ${{ matrix.task.configuration || '' }}
+      packagesToPush: ${{ matrix.task.packagesToPush || '' }}
+      nuGetFeedType: ${{ matrix.task.nuGetFeedType || '' }}
+      publishFeedCredentials: ${{ matrix.task.publishFeedCredentials || '' }}
